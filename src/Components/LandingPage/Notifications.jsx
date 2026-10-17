@@ -1,68 +1,60 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
+import { seedNotifications as seedNotices } from "../../database/db";
 
-const STORAGE_KEY = 'village_notifications';
+const STORAGE_KEY = "gp_notices";
 
-const formatDateTime = (value) => {
-  if (!value) return '';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleString('en-IN', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-};
+function loadNotices() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {
+    // ignore parse errors, fall through to seed
+  }
+  const seeded = seedNotices.map((n, idx) => ({ id: n.id ?? `seed-${idx}`, ...n }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
+  return seeded;
+}
 
-const Notifications = () => {
-  const [notifications, setNotifications] = useState([]);
+export function NoticesPage() {
+  const [notices, setNotices] = useState([]);
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    // Newest first
-    const sorted = [...stored].sort(
-      (a, b) => new Date(b.datetime) - new Date(a.datetime)
-    );
-    setNotifications(sorted);
+    setNotices(loadNotices());
   }, []);
 
+  const unreadCount = notices.filter((n) => n.unread).length;
+
   return (
-    <section className="py-16 md:py-24 bg-gray-50 min-h-[60vh]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="text-sm font-semibold text-green-700 uppercase tracking-wide">Suchnaye</span>
-          <h1 className="mt-2 text-3xl md:text-4xl font-extrabold text-gray-900">Village Notifications</h1>
-          <p className="mt-4 text-lg text-gray-600">
-            Important announcements and updates from the Mashpur Gram Panchayat.
-          </p>
-        </div>
-
-        {notifications.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-10 text-center text-gray-500">
-            No notifications have been posted yet.
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {notifications.map((note) => (
-              <div
-                key={note.id}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
-              >
-                <div className="flex items-start justify-between gap-4 flex-wrap">
-                  <h3 className="text-lg font-bold text-gray-900">{note.title}</h3>
-                  <span className="text-xs font-semibold text-green-700 bg-green-50 px-3 py-1 rounded-full whitespace-nowrap">
-                    {formatDateTime(note.datetime)}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm text-gray-600 leading-relaxed">{note.description}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
+    <div className="fade-up space-y-4 p-4 lg:p-8">
+      <p className="text-sm text-emerald-800/70">
+        Official suchnaye from Mashpur Gram Panchayat.
+        {unreadCount > 0 && ` ${unreadCount} item${unreadCount > 1 ? "s" : ""} need your attention.`}
+      </p>
+      <ul className="space-y-3">
+        {notices.map((n) => (
+          <li
+            key={n.id}
+            className="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm"
+          >
+            <div className="flex flex-wrap items-center gap-2">
+              <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${n.tagColor}`}>
+                {n.tag}
+              </span>
+              {n.unread && (
+                <span className="rounded-full bg-gp px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                  New
+                </span>
+              )}
+              <span className="ml-auto text-xs text-emerald-800/55">{n.date}</span>
+            </div>
+            <h4 className="mt-2 text-base font-semibold text-emerald-950">{n.title}</h4>
+            <p className="text-xs text-emerald-800/60">{n.hindi}</p>
+            <p className="mt-2 text-sm leading-relaxed text-emerald-900/75">{n.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
-};
+}
 
-export default Notifications;
+export default NoticesPage;

@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 
 const quickLinks = [
-  { label: 'What we do ?', href: '/#what-we-do' },
-  { label: 'About', href: '/#about' },
-  { label: 'Gallery', href: '/#gallery' },
-  { label: 'Contact', href: '/#contact' },
+  // { label: 'What we do ?', href: '/what-we-do' },
+  { label: 'About', href: '/about' },
+  { label: 'Gallery', href: '/gallery' },
+  { label: 'Contact', href: '/contact' },
   { label: 'Suchnaye', href: '/notifications' },
 ];
 
@@ -20,12 +20,12 @@ const Footer = () => (
               </svg>
             </div>
             <div className="leading-tight">
-              <span className="block text-xl font-extrabold text-white tracking-tight">Mashpur</span>
+              <span className="block text-xl font-extrabold text-white tracking-tight">Maspur</span>
               <span className="block text-[11px] font-medium text-green-400 -mt-0.5">District Kanker, Chhattisgarh</span>
             </div>
           </Link>
           <p className="mt-4 max-w-sm text-sm text-gray-400">
-            Mashpur Gram Panchayat, District Kanker, Chhattisgarh — working towards a connected,
+            Maspur Gram Panchayat, District Kanker, Chhattisgarh — working towards a connected,
             educated, and self-reliant village community.
           </p>
         </div>
@@ -42,14 +42,14 @@ const Footer = () => (
         <div>
           <h4 className="text-white font-semibold mb-4">Contact</h4>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li>Mashpur, Kanker, Chhattisgarh</li>
-            <li>contact@mashpur.in</li>
+            <li>Maspur, Kanker, Chhattisgarh</li>
+            <li>contact@maspur.in</li>
             <li>+91 98765 43210</li>
           </ul>
         </div>
       </div>
       <div className="mt-10 pt-6 border-t border-gray-800 text-center text-sm text-gray-500">
-        © {new Date().getFullYear()} Mashpur Gram Panchayat. All rights reserved.
+        © {new Date().getFullYear()} Maspur Gram Panchayat. All rights reserved.
       </div>
     </div>
   </footer>
